@@ -5,8 +5,68 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ItViteaYahtzee"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Yahtzee" Height="450" Width="800">
     <Grid>
-        
+        <Grid Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="0.5*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1">
+                <Grid>
+                    
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" BorderBrush="Black" BorderThickness="0.5, 0.5, 0.5, 0.5" Padding="2">
+                            <Grid Grid.Column="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock TextWrapping="Wrap" Text="" VerticalAlignment="Center" />
+                                <TextBlock TextWrapping="Wrap" Text="Ones" VerticalAlignment="Center" Grid.Row="1"/>
+                                <TextBlock TextWrapping="Wrap" Text="Twos" VerticalAlignment="Center" Grid.Row="2"/>
+                                <TextBlock TextWrapping="Wrap" Text="Threes" VerticalAlignment="Center" Grid.Row="3"/>
+                                <TextBlock TextWrapping="Wrap" Text="Fours" VerticalAlignment="Center" Grid.Row="4"/>
+                                <TextBlock TextWrapping="Wrap" Text="Fives" VerticalAlignment="Center" Grid.Row="5"/>
+                                <TextBlock TextWrapping="Wrap" Text="Sixes" VerticalAlignment="Center" Grid.Row="6"/>
+                                <TextBlock TextWrapping="Wrap" Text="Sum" VerticalAlignment="Center" Grid.Row="7"/>
+                                <TextBlock TextWrapping="Wrap" Text="Bonus" VerticalAlignment="Center" Grid.Row="8"/>
+                                <TextBlock TextWrapping="Wrap" Text="Three of a kind" VerticalAlignment="Center" Grid.Row="9"/>
+                                <TextBlock TextWrapping="Wrap" Text="Four of a kind" VerticalAlignment="Center" Grid.Row="10"/>
+                                <TextBlock TextWrapping="Wrap" Text="Full house" VerticalAlignment="Center" Grid.Row="11"/>
+                                <TextBlock TextWrapping="Wrap" Text="Small straight" VerticalAlignment="Center" Grid.Row="12"/>
+                                <TextBlock TextWrapping="Wrap" Text="Large straight" VerticalAlignment="Center" Grid.Row="13"/>
+                                <TextBlock TextWrapping="Wrap" Text="Chance" VerticalAlignment="Center" Grid.Row="14"/>
+                                <TextBlock TextWrapping="Wrap" Text="Yahtzee" VerticalAlignment="Center" Grid.Row="15"/>
+                                <TextBlock TextWrapping="Wrap" Text="Total Score" VerticalAlignment="Center" Grid.Row="16"/>
+                            </Grid>
+                        </Border>
+                        <Border Grid.Column="1" BorderBrush="Black" BorderThickness="0.6, 0.5, 0.5, 0.5" Padding="2"></Border>
+                    </Grid>
+                    
+                </Grid>
+            </Border>
+
+        </Grid>
     </Grid>
 </Window>
