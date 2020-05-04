@@ -20,25 +20,20 @@ namespace ItViteaYahtzee
     /// </summary>
     public partial class MainWindow : Window
     {
-        //Declare private variables.
-        private Random rnd = new Random();
-
         //Declare public variables
-        public List<int> diceResults;
+        public VM_RollsRules vmRoll;
 
         public MainWindow()
         {
+            vmRoll = new VM_RollsRules();
+            DataContext = vmRoll;
             InitializeComponent();
-            diceResults = new List<int>
-            {
-                5,
-                1,
-                4,
-                4,
-                3
-            };
-            iCtrlDice.ItemsSource = diceResults;
+
         }
-        
+
+        private void Btn_Click_Roll(object sender, RoutedEventArgs e)
+        {
+            vmRoll.RollDice();
+        }
     }
 }
