@@ -35,7 +35,7 @@
                         <DataTemplate>
                             <StackPanel>
                             <TextBlock FontSize="20" Text="{Binding Number}" HorizontalAlignment="Center"/>
-                            <ToggleButton FontSize="16" Content="Hold" IsChecked="{Binding IsHeld}"/>
+                            <ToggleButton Content="Hold" IsChecked="{Binding IsHeld}"/>
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -45,6 +45,7 @@
 
             </Grid>
 
+            <!--
             <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1">
                 <Grid>
                     
@@ -97,6 +98,10 @@
                     </Grid>
                     
                 </Grid>
+            </Border>-->
+            <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1">
+                <DataGrid ItemsSource="{Binding ScoreGrid}">
+                </DataGrid>
             </Border>
 
         </Grid>

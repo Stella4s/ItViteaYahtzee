@@ -14,6 +14,7 @@ namespace ItViteaYahtzee
         //Private fields
         private Dice[] _DiceArr;
         private Random rnd = new Random();
+        private ScoreBar[] _ScoreGrid;
 
         public VM_RollsRules()
         {
@@ -26,9 +27,19 @@ namespace ItViteaYahtzee
                 new Dice {Number = 1, IsHeld = false }
             };
             InitialiseDice();
+
+            _ScoreGrid = new ScoreBar[]
+            {
+                new ScoreBar{Name = "Ones"},
+                new ScoreBar{Name = "Twos"},
+                new ScoreBar{Name = "Threes"},
+                new ScoreBar{Name = "Fours"},
+                new ScoreBar{Name = "Fives"},
+                new ScoreBar{Name = "Sixes"},
+            };
         }
 
-        //Public properties.
+        #region Public properties.
         public Dice[] DiceArr
         {
             get { return _DiceArr; }
@@ -38,6 +49,16 @@ namespace ItViteaYahtzee
                 OnPropertyChanged();
             }
         }
+        public ScoreBar[] ScoreGrid
+        {
+            get { return _ScoreGrid; }
+            set
+            {
+                _ScoreGrid = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
 
         #region Methdods relating to DiceArray
         //Method for Initialising/Resetting Dice Array.
@@ -58,8 +79,40 @@ namespace ItViteaYahtzee
                 if (!DiceArr[i].IsHeld)
                     DiceArr[i].Number = rnd.Next(1, 7);
             }
+            UpdateScoreGrid();
         }
         #endregion
+
+        #region Methods relating to ScoreGrid
+        public void UpdateScoreGrid()
+        {
+            int Sum;
+            for (int i = 0; i < 6; i++)
+            {
+                Sum = GetSumSameDice(i + 1);
+                ScoreGrid[i].Points = Sum;
+                if (Sum != 0)
+                    ScoreGrid[i].IsValid = true;
+                else
+                    ScoreGrid[i].IsValid = false;
+            }
+               
+        }
+
+        public int GetSumSameDice( int dieNum)
+        {
+            int Sum = 0;
+            for (int i = 0; i < 5; i++)
+            {
+                if (DiceArr[i].Number == dieNum)
+                {
+                    Sum += dieNum;
+                }
+            }
+            return Sum;
+        }
+        #endregion
+
 
         #region Commands
         public ICommand GetDiceCmd
