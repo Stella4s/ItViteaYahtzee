@@ -97,42 +97,58 @@ namespace ItViteaYahtzee
         public void UpdateScoreGrid()
         {
             int points;
+            //ScoreRows 1 to 6.
             for (int i = 0; i < 6; i++)
             {
-                //For each number points (ones, twos, etc.) Calculates the sum and updates the points.
-                points = GetSumSameDice(i + 1);
-                ScoreGrid[i].Points = points;
+                //Do not update points if the row was used already.
+                if (!ScoreGrid[i].IsUsed)
+                {
+                    //For each number points (ones, twos, etc.) Calculates the sum and updates the points.
+                    points = GetSumSameDice(i + 1);
+                    ScoreGrid[i].Points = points;
 
-                //If the points are 0 there are no dice of that number. Making the row invalid.
-                //As the user should not be able to select to use that score.
-                if (points != 0)
-                    ScoreGrid[i].IsValid = true;
-                else
-                    ScoreGrid[i].IsValid = false;
+                    //If the points are 0 there are no dice of that number. Making the row invalid.
+                    //As the user should not be able to select to use that score.
+                    if (points != 0)
+                        ScoreGrid[i].IsValid = true;
+                    else
+                        ScoreGrid[i].IsValid = false;
+                }
             }
+            //Get/update Scorerows Sum and Bonus.
             GetSumTop();
         }
 
         public void GetSumTop ()
         {
-            int sum = 0, tracker = 1;
-            for (int i = 0; i < 6; i++)
+            if (!ScoreGrid[6].IsUsed)
             {
-                //If the bar has been used for adding points. Add those points to the sum.
-                //Also for each used row add 1 to the tracker.
-                if (ScoreGrid[i].IsUsed)
+                int sum = 0, tracker = 0;
+                for (int i = 0; i < 6; i++)
                 {
-                    sum += ScoreGrid[i].Points;
-                    tracker++;
+                    //If the bar has been used for adding points. Add those points to the sum.
+                    //Also for each used row add 1 to the tracker.
+                    if (ScoreGrid[i].IsUsed)
+                    {
+                        sum += ScoreGrid[i].Points;
+                        tracker++;
+                    }
                 }
+                //If the tracker reaches 6 it means all number rows have been used.
+                //Which means there is no need to re-calculate the sum anymore as it will not change.
+                //And if the player gets the bonus points can be determined now.
+                if (tracker == 6)
+                {
+                    //If the sum is 63 or more points get 35 bonus points. Otherwise 0.
+                    ScoreGrid[6].IsUsed = true;
+                    if (sum >= 63)
+                        ScoreGrid[7].Points = 35;
+                    else
+                        ScoreGrid[7].Points = 0;
+                    ScoreGrid[7].IsUsed = true;
+                }
+                ScoreGrid[6].Points = sum;
             }
-            //If the tracker reaches 6 it means all number rows have been used.
-            //Which means there is no need to re-calculate the sum anymore as it will not change.
-            //And if the player gets the bonus points can be determined now.
-            if (tracker == 6)
-                ScoreGrid[6].IsUsed = true;
-
-            ScoreGrid[6].Points = sum;
         }
 
         //Calculates the sum of the dice that have the same number. 
