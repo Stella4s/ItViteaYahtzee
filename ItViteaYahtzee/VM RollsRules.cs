@@ -100,27 +100,71 @@ namespace ItViteaYahtzee
             //ScoreRows 1 to 6.
             for (int i = 0; i < 6; i++)
             {
-                //Do not update points if the row was used already.
-                if (!ScoreGrid[i].IsUsed)
-                {
-                    //For each number points (ones, twos, etc.) Calculates the sum and updates the points.
-                    points = GetSumSameDice(i + 1);
-                    ScoreGrid[i].Points = points;
-
-                    //If the points are 0 there are no dice of that number. Making the row invalid.
-                    //As the user should not be able to select to use that score.
-                    if (points != 0)
-                        ScoreGrid[i].IsValid = true;
-                    else
-                        ScoreGrid[i].IsValid = false;
-                }
+                //For each number points (ones, twos, etc.) Calculates the sum and updates the points.
+                points = GetSumSameDice(i + 1);
+                UpdateScoreBar(i, points);
             }
-            //Get/update Scorerows Sum and Bonus.
+            //Update ScoreRows Sum and Bonus.
             GetSumTop();
+
+            //Switch case for ThreeOfaKind, FourOfAKind and checking Yahtzee.
+            bool isYahtzee = false;
+            points = GetSumAllDice();
+            switch (NumberOfAKind())
+            {
+                case 0:
+                    UpdateScoreBar(8, 0);
+                    UpdateScoreBar(9, 0);
+                    break;
+                case 3:
+                    UpdateScoreBar(8, points);
+                    UpdateScoreBar(9, 0);
+                    break;
+                case 4:
+                    UpdateScoreBar(8, points);
+                    UpdateScoreBar(9, points);
+                    break;
+                case 5:
+                    UpdateScoreBar(8, points);
+                    UpdateScoreBar(9, points);
+                    isYahtzee = true;
+                    break;
+                default:
+                    break;
+            }
+
         }
 
+        /// <summary>
+        /// Updates the scoregrid bar based on the index with the points given.
+        /// If the points are 0 it will set the bar IsValid as false.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="points"></param>
+        public void UpdateScoreBar(int index, int points)
+        {
+            //Do not update points if the row was used already.
+            if (!ScoreGrid[index].IsUsed)
+            {
+                ScoreGrid[index].Points = points;
+
+                //If the points are 0 there are no dice of that number. Making the row invalid.
+                //As the user should not be able to select to use that bar to add to their score.
+                if (points != 0)
+                    ScoreGrid[index].IsValid = true;
+                else
+                    ScoreGrid[index].IsValid = false;
+            }
+        }
+
+        /// <summary>
+        /// Gets the sum of the top section of points depending on which ones are used.
+        /// If all are used it will determine if the player gets bonus points and will set both rows as IsUsed.
+        /// And will no longer go through all the calculations when the method is called upon.
+        /// </summary>
         public void GetSumTop ()
         {
+            //Check the sumrow IsUsed. If IsUsed == true. Do not go through all the calculations anymore as the sum has already been determined.
             if (!ScoreGrid[6].IsUsed)
             {
                 int sum = 0, tracker = 0;
@@ -151,8 +195,10 @@ namespace ItViteaYahtzee
             }
         }
 
-        //Calculates the sum of the dice that have the same number. 
-        //Being 0 if no dice are the selected dieNum.
+        ///<summary> 
+        ///Calculates the sum of the dice that have the same number. 
+        ///Being 0 if no dice are the selected dieNum.
+        ///</summary>
         public int GetSumSameDice( int dieNum)
         {
             int sum = 0;
@@ -164,6 +210,42 @@ namespace ItViteaYahtzee
                 }
             }
             return sum;
+        }
+        /// <summary>
+        /// Returns the sum of all the dice.
+        /// </summary>
+        /// <returns></returns>
+        public int GetSumAllDice()
+        {
+            int sum = 0;
+            for (int i = 0; i < 5; i++)
+            {
+                sum += DiceArr[i].Number;
+            }
+            return sum;
+        }
+
+        /// <summary>
+        /// Returns how many dice are of the same kind. Returns 0 if there are less than 3 of the same kind.
+        /// </summary>
+        /// <param name="numSame"></param>
+        /// <returns></returns>
+        public int NumberOfAKind()
+        {
+            int sameKind = 0;
+            for (int i = 1; i <= 6; i++)
+            {
+                int counter = 0;
+                for (int j = 0; j < 5; j++)
+                {
+                    if (DiceArr[j].Number == i)
+                        counter++;
+                    if (counter > 2)
+                        if (counter > sameKind)
+                            sameKind = counter;
+                }
+            }
+            return sameKind;
         }
         #endregion
 
