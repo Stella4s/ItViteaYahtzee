@@ -7,6 +7,10 @@
         mc:Ignorable="d"
         Title="Yahtzee" Height="450" Width="800">
 
+    <Window.DataContext>
+        <local:VM_RollsRules/>
+    </Window.DataContext>
+
     <Grid>
         <Grid Margin="5">
             <Grid.ColumnDefinitions>
@@ -24,17 +28,20 @@
                 <ItemsControl Name="iCtrlDice" Grid.Row="1" ItemsSource="{Binding DiceArr}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" />
+                            <UniformGrid Rows="1"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock FontSize="20" Text="{Binding Number}"/>
+                            <StackPanel>
+                            <TextBlock FontSize="20" Text="{Binding Number}" HorizontalAlignment="Center"/>
+                            <ToggleButton FontSize="16" Content="Hold" IsChecked="{Binding IsHeld}"/>
+                            </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                    
-                <Button Grid.Row="2" Content="Roll" Width="150" Height="50" Margin="5" Click="Btn_Click_Roll"/>
+
+                <Button Grid.Row="2" Content="Roll" Width="150" Height="50" Margin="5" Command="{Binding GetDiceCmd, Mode=OneWay}" />
 
             </Grid>
 

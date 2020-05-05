@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 
 namespace ItViteaYahtzee
 {
@@ -56,6 +57,16 @@ namespace ItViteaYahtzee
                 //If the die is NOT held, then roll.
                 if (!DiceArr[i].IsHeld)
                     DiceArr[i].Number = rnd.Next(1, 7);
+            }
+        }
+        #endregion
+
+        #region Commands
+        public ICommand GetDiceCmd
+        {
+            get
+            {
+                return new RelayCommand(RollDice);
             }
         }
         #endregion

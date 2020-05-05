@@ -20,20 +20,11 @@ namespace ItViteaYahtzee
     /// </summary>
     public partial class MainWindow : Window
     {
-        //Declare public variables
-        public VM_RollsRules vmRoll;
 
         public MainWindow()
         {
-            vmRoll = new VM_RollsRules();
-            DataContext = vmRoll;
             InitializeComponent();
-
         }
 
-        private void Btn_Click_Roll(object sender, RoutedEventArgs e)
-        {
-            vmRoll.RollDice();
-        }
     }
 }
