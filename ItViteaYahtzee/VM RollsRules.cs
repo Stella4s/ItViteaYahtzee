@@ -132,6 +132,14 @@ namespace ItViteaYahtzee
                 default:
                     break;
             }
+            
+            //Check for fullhouse.
+            if (CheckFullHouse())
+                points = 25;
+            else
+                points = 0;
+            UpdateScoreBar(10, points);
+
 
         }
 
@@ -247,6 +255,27 @@ namespace ItViteaYahtzee
             }
             return sameKind;
         }
+
+        //Checks if fullhouse is true or false.
+        public bool CheckFullHouse()
+        {
+            bool isFullHouse = false;
+            var houselist = DiceArr.Select(x => x.Number)
+                .GroupBy(c => c)
+                .Select(group => new { Num = group.Key, Count = group.Count() })
+                .OrderBy(x => x.Num).ToList();
+
+            if (houselist.Count == 2)
+                foreach (var item in houselist)
+                {
+                    if (item.Count == 3)
+                        isFullHouse = true;
+                }
+            return isFullHouse;
+        }
+
+
+
         #endregion
 
 
