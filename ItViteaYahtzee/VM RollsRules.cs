@@ -90,6 +90,7 @@ namespace ItViteaYahtzee
                     DiceArr[i].Number = rnd.Next(1, 7);
             }
             UpdateScoreGrid();
+            
         }
         #endregion
 
@@ -107,27 +108,34 @@ namespace ItViteaYahtzee
             //Update ScoreRows Sum and Bonus.
             GetSumTop();
 
-            //Switch case for ThreeOfaKind, FourOfAKind and checking Yahtzee.
-            bool isYahtzee = false;
+            //Set points to Sum of All Dice for ThreeOfAKind, FourOfAKind and Chance.
             points = GetSumAllDice();
+
+            //Set Chance.
+            UpdateScoreBar(13, points);
+
+            //Switch case for ThreeOfaKind, FourOfAKind and Yahtzee.
             switch (NumberOfAKind())
             {
                 case 0:
                     UpdateScoreBar(8, 0);
                     UpdateScoreBar(9, 0);
+                    UpdateScoreBar(14, 0);
                     break;
                 case 3:
                     UpdateScoreBar(8, points);
                     UpdateScoreBar(9, 0);
+                    UpdateScoreBar(14, 0);
                     break;
                 case 4:
                     UpdateScoreBar(8, points);
                     UpdateScoreBar(9, points);
+                    UpdateScoreBar(14, 0);
                     break;
                 case 5:
                     UpdateScoreBar(8, points);
                     UpdateScoreBar(9, points);
-                    isYahtzee = true;
+                    UpdateScoreBar(14, 50);
                     break;
                 default:
                     break;
@@ -160,7 +168,8 @@ namespace ItViteaYahtzee
                     break;
             }
 
-
+            //Update TotalScore. Later moved elsewhere? 
+            TotalScore();
         }
 
         /// <summary>
@@ -312,7 +321,7 @@ namespace ItViteaYahtzee
             //If counter == 4 all 5 numbers are sequential. Largestraight.
             //If counter == 3 4 numbers are sequential. Smallstraight.
 
-            //If there are less than 4 different groups there is no straight and there won't need to be checked.
+            //If there are less than 4 different groups there is no straight and no need to check.
             if (straightList.Count > 3)
                 for (int i = 1; i < straightList.Count; i++)
                 {
@@ -325,6 +334,16 @@ namespace ItViteaYahtzee
         }
 
 
+        public void TotalScore()
+        {
+
+
+            //Select all Points from ScoreGrid and add them together. Then UpdateScoreBar of totalscore.
+            //int score = ScoreGrid.Select(x => x.Points).Sum();
+
+            int score = ScoreGrid.Select(group => new { group.Points, Used = group.IsUsed }).Where(c => c.Used == true).Sum(c => c.Points);
+            UpdateScoreBar(15, score);
+        }
 
         #endregion
 
