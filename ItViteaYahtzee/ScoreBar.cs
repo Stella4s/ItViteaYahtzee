@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -50,6 +50,7 @@ namespace ItViteaYahtzee
             {
                 _IsUsed = value;
                 OnPropertyChanged();
+                OnIsUsedChanged(EventArgs.Empty);
             }
         }
         public bool AllowClick
@@ -71,6 +72,12 @@ namespace ItViteaYahtzee
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        public event EventHandler IsUsedChanged;
+        private void OnIsUsedChanged(EventArgs e)
+        {
+            IsUsedChanged?.Invoke(this, e);
         }
         #endregion
     }

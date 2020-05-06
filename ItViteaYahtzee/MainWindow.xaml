@@ -25,7 +25,7 @@
                     <RowDefinition/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <ItemsControl Name="iCtrlDice" Grid.Row="1" ItemsSource="{Binding DiceArr}">
+                <ItemsControl Name="iCtrlDice" Grid.Row="1" ItemsSource="{Binding DiceArr, Mode=TwoWay}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <UniformGrid Rows="1"/>
@@ -35,72 +35,23 @@
                         <DataTemplate>
                             <StackPanel>
                             <TextBlock FontSize="20" Text="{Binding Number}" HorizontalAlignment="Center"/>
-                            <ToggleButton Content="Hold" IsChecked="{Binding IsHeld}"/>
+                            <ToggleButton Content="Hold" IsChecked="{Binding IsHeld, Mode=TwoWay}"/>
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-
-                <Button Grid.Row="2" Content="Roll" Width="150" Height="50" Margin="5" Command="{Binding GetDiceCmd, Mode=OneWay}" />
+                <StackPanel Grid.Row="0" Margin="5" Orientation="Horizontal">
+                    <TextBlock  Text="Rolls: " FontSize="20" />
+                    <TextBlock  Text="{Binding DiceRoll}" FontSize="20"/>
+                </StackPanel>
+          
+                <Button Name="btnRoll" Grid.Row="2" Content="Roll" Width="150" Height="50" Margin="5" Command="{Binding GetDiceCmd, Mode=OneWay}" />
+                
 
             </Grid>
 
-            <!--
             <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1">
-                <Grid>
-                    
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" BorderBrush="Black" BorderThickness="0.5, 0.5, 0.5, 0.5" Padding="2">
-                            <Grid Grid.Column="0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
-                                <TextBlock TextWrapping="Wrap" Text="" VerticalAlignment="Center" />
-                                <TextBlock TextWrapping="Wrap" Text="Ones" VerticalAlignment="Center" Grid.Row="1"/>
-                                <TextBlock TextWrapping="Wrap" Text="Twos" VerticalAlignment="Center" Grid.Row="2"/>
-                                <TextBlock TextWrapping="Wrap" Text="Threes" VerticalAlignment="Center" Grid.Row="3"/>
-                                <TextBlock TextWrapping="Wrap" Text="Fours" VerticalAlignment="Center" Grid.Row="4"/>
-                                <TextBlock TextWrapping="Wrap" Text="Fives" VerticalAlignment="Center" Grid.Row="5"/>
-                                <TextBlock TextWrapping="Wrap" Text="Sixes" VerticalAlignment="Center" Grid.Row="6"/>
-                                <TextBlock TextWrapping="Wrap" Text="Sum" VerticalAlignment="Center" Grid.Row="7"/>
-                                <TextBlock TextWrapping="Wrap" Text="Bonus" VerticalAlignment="Center" Grid.Row="8"/>
-                                <TextBlock TextWrapping="Wrap" Text="Three of a kind" VerticalAlignment="Center" Grid.Row="9"/>
-                                <TextBlock TextWrapping="Wrap" Text="Four of a kind" VerticalAlignment="Center" Grid.Row="10"/>
-                                <TextBlock TextWrapping="Wrap" Text="Full house" VerticalAlignment="Center" Grid.Row="11"/>
-                                <TextBlock TextWrapping="Wrap" Text="Small straight" VerticalAlignment="Center" Grid.Row="12"/>
-                                <TextBlock TextWrapping="Wrap" Text="Large straight" VerticalAlignment="Center" Grid.Row="13"/>
-                                <TextBlock TextWrapping="Wrap" Text="Chance" VerticalAlignment="Center" Grid.Row="14"/>
-                                <TextBlock TextWrapping="Wrap" Text="Yahtzee" VerticalAlignment="Center" Grid.Row="15"/>
-                                <TextBlock TextWrapping="Wrap" Text="Total Score" VerticalAlignment="Center" Grid.Row="16"/>
-                            </Grid>
-                        </Border>
-                        <Border Grid.Column="1" BorderBrush="Black" BorderThickness="0.6, 0.5, 0.5, 0.5" Padding="2"></Border>
-                    </Grid>
-                    
-                </Grid>
-            </Border>-->
-            <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1">
-                <DataGrid ItemsSource="{Binding ScoreGrid}">
+                <DataGrid Name="dGridScore" ItemsSource="{Binding ScoreGrid}" CanUserReorderColumns="False" CanUserSortColumns="False">
                 </DataGrid>
             </Border>
 

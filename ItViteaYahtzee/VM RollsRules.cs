@@ -11,10 +11,11 @@ namespace ItViteaYahtzee
 {
     public class VM_RollsRules : INotifyPropertyChanged
     {
-        //Private fields
+        //Private fields for properties.
         private Dice[] _DiceArr;
         private Random rnd = new Random();
         private ScoreBar[] _ScoreGrid;
+        private int _DiceRoll;
 
         public VM_RollsRules()
         {
@@ -26,7 +27,7 @@ namespace ItViteaYahtzee
                 new Dice {Number = 1, IsHeld = false },
                 new Dice {Number = 1, IsHeld = false }
             };
-            InitialiseDice();
+            ResetDice();
 
             _ScoreGrid = new ScoreBar[]
             {
@@ -47,6 +48,7 @@ namespace ItViteaYahtzee
                 new ScoreBar{Name = "Yahtzee"},
                 new ScoreBar{Name = "Total Score", AllowClick = false}
             };
+            InitScoreGridEvents();
         }
 
         #region Public properties.
@@ -68,33 +70,81 @@ namespace ItViteaYahtzee
                 OnPropertyChanged();
             }
         }
+        public int DiceRoll
+        {
+            get { return _DiceRoll; }
+            set
+            {
+                _DiceRoll = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
+
+        #region General Game Methods
+        //private fields for Game Methods.
+        private bool notedPoints;
+
+        public void NextTurn()
+        {
+            //Reset diceroll to 0.
+            DiceRoll = 0;
+            //Reset notedPoints to false.
+            notedPoints = false;
+            ResetDice();
+        }
+
+        ///<summary>Updates the points being used to true to keep track of if the player has noted their points for this round.
+        ///This does not immediately go to the next turn as to prevent the user submitting the same points a second time.</summary>
+        public void UpdateIsUsed(object sender, EventArgs e)
+        {
+            notedPoints = true;
+            //Reset diceroll to 0.
+            DiceRoll = 0;
+        }
+        #endregion 
 
         #region Methdods relating to DiceArray
         //Method for Initialising/Resetting Dice Array.
-        public void InitialiseDice()
+        public void ResetDice()
         {
             for (int i = 0; i < 5; i++)
             {
-                DiceArr[i].Number = i;
+                //DiceArr[i].Number = i; Don't change numbers, probably not necessary.
                 DiceArr[i].IsHeld = false;
             }
         }
+
         //Methods to roll the dice in the dice array.
         public void RollDice()
         {
-            for (int i = 0; i < 5; i++)
+            if (notedPoints)
+                NextTurn();
+
+            if (DiceRoll < 3)
             {
-                //If the die is NOT held, then roll.
-                if (!DiceArr[i].IsHeld)
-                    DiceArr[i].Number = rnd.Next(1, 7);
+                for (int i = 0; i < 5; i++)
+                {
+                    //If the die is NOT held, then roll.
+                    if (!DiceArr[i].IsHeld)
+                        DiceArr[i].Number = rnd.Next(1, 7);
+                }
+                UpdateScoreGrid();
+                DiceRoll++;
             }
-            UpdateScoreGrid();
-            
         }
         #endregion
 
         #region Methods relating to ScoreGrid
+
+        public void InitScoreGridEvents()
+        {
+            foreach (ScoreBar bar in ScoreGrid)
+            {
+                bar.IsUsedChanged += UpdateIsUsed;
+            }
+        }
+
         public void UpdateScoreGrid()
         {
             int points;
@@ -285,7 +335,7 @@ namespace ItViteaYahtzee
             return sameKind;
         }
 
-        //Checks if fullhouse is true or false.
+        ///<summary>Checks if fullhouse is true or false.</summary>
         public bool CheckFullHouse()
         {
             bool isFullHouse = false;
@@ -333,11 +383,8 @@ namespace ItViteaYahtzee
             return counter;
         }
 
-
         public void TotalScore()
         {
-
-
             //Select all Points from ScoreGrid and add them together. Then UpdateScoreBar of totalscore.
             //int score = ScoreGrid.Select(x => x.Points).Sum();
 
