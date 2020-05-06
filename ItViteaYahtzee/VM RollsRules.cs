@@ -140,6 +140,26 @@ namespace ItViteaYahtzee
                 points = 0;
             UpdateScoreBar(10, points);
 
+            //Reset points to 0. 
+            points = 0;
+            //Checkstraight returns 4 for largestraight, 3 for smallstraight.
+            //Any other number returned means no straight, leaving them both at 0 points.
+            switch (CheckStraight())
+            {
+                case 3:
+                    UpdateScoreBar(11, 30);
+                    UpdateScoreBar(12, points);
+                    break;
+                case 4:
+                    UpdateScoreBar(11, 30);
+                    UpdateScoreBar(12, 40);
+                    break;
+                default:
+                    UpdateScoreBar(11, points);
+                    UpdateScoreBar(12, points);
+                    break;
+            }
+
 
         }
 
@@ -272,6 +292,36 @@ namespace ItViteaYahtzee
                         isFullHouse = true;
                 }
             return isFullHouse;
+        }
+
+        public int CheckStraight()
+        {
+            //Take the dice and group them. (To take care of duplicate numbers. e.g. 1 2 3 3 4. Still counts as a smallstraight.)
+            //Then order them and put them in a list.
+            var straightList = DiceArr.Select(x => x.Number)
+                .GroupBy(c => c)
+                .Select(group => new { Num = group.Key, Count = group.Count() })
+                .OrderBy(x => x.Num).ToList();
+
+            int itemA = straightList[0].Num, 
+                itemB, 
+                counter = 0;
+            //ItemA starts at smallest number. (Either 1 or 2). 
+            //For loop makes ItemB ItemA. Then ItemA the number i, the next index in the list.
+            //If ItemA - ItemB = 1 then the numbers are sequential and the counter goes up.
+            //If counter == 4 all 5 numbers are sequential. Largestraight.
+            //If counter == 3 4 numbers are sequential. Smallstraight.
+
+            //If there are less than 4 different groups there is no straight and there won't need to be checked.
+            if (straightList.Count > 3)
+                for (int i = 1; i < straightList.Count; i++)
+                {
+                    itemB = itemA;
+                    itemA = straightList[i].Num;
+                    if (itemA - itemB == 1)
+                        counter++;
+                }
+            return counter;
         }
 
 
