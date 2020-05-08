@@ -87,20 +87,22 @@ namespace ItViteaYahtzee
 
         public void NextTurn()
         {
-            //Reset diceroll to 0.
-            DiceRoll = 0;
             //Reset notedPoints to false.
             notedPoints = false;
+            //Reset DiceHolds.
             ResetDice();
         }
 
         ///<summary>Updates the points being used to true to keep track of if the player has noted their points for this round.
-        ///This does not immediately go to the next turn as to prevent the user submitting the same points a second time.</summary>
+        ///This does not immediately go to the next turn as to prevent the user submitting the same points a second time.
+        ///</summary>
         public void UpdateIsUsed(object sender, EventArgs e)
         {
             notedPoints = true;
             //Reset diceroll to 0.
             DiceRoll = 0;
+            //Reset DiceHolds.
+            ResetDice();
         }
         #endregion 
 

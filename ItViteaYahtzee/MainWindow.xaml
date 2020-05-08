@@ -11,6 +11,52 @@
         <local:VM_RollsRules/>
     </Window.DataContext>
 
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type local:ScoreBar}">
+            <Grid>
+                <Grid.Resources>
+                    <Style TargetType="{x:Type CheckBox}">
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                    </Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                    </Style>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Column="0" Text="{Binding Name}"/>
+                <TextBlock Grid.Column="1" Text="{Binding Points}" HorizontalAlignment="Center"/>
+                <CheckBox Grid.Column="2" IsChecked="{Binding IsValid}"/>
+                <CheckBox Grid.Column="3" IsChecked="{Binding IsUsed}"/>
+                <CheckBox Grid.Column="4" IsChecked="{Binding AllowClick}"/>
+            </Grid>
+            <!--<Border BorderBrush="Black" BorderThickness="0.5">
+                <Grid Margin="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{Binding Name}"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Points}" HorizontalAlignment="Center"/>
+                    
+                    <UniformGrid Rows="1" Grid.Column="2">
+                        <CheckBox Grid.Column="2" IsChecked="{Binding IsValid}"/>
+                        <CheckBox Grid.Column="3" IsChecked="{Binding IsUsed}"/>
+                        <CheckBox Grid.Column="4" IsChecked="{Binding AllowClick}"/>
+                    </UniformGrid>
+            </Grid>
+            </Border> -->
+        </DataTemplate>
+    </Window.Resources>
+
     <Grid>
         <Grid Margin="5">
             <Grid.ColumnDefinitions>
@@ -25,7 +71,7 @@
                     <RowDefinition/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <ItemsControl Name="iCtrlDice" Grid.Row="1" ItemsSource="{Binding DiceArr, Mode=TwoWay}">
+                <ItemsControl Name="iCtrlDice" Grid.Row="1" ItemsSource="{Binding DiceArr}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <UniformGrid Rows="1"/>
@@ -45,14 +91,22 @@
                     <TextBlock  Text="{Binding DiceRoll}" FontSize="20"/>
                 </StackPanel>
           
-                <Button Name="btnRoll" Grid.Row="2" Content="Roll" Width="150" Height="50" Margin="5" Command="{Binding GetDiceCmd, Mode=OneWay}" />
+                <Button Name="btnRoll" Grid.Row="2" Content="Roll" Width="150" Height="50" Margin="5" Command="{Binding GetDiceCmd}" />
                 
 
             </Grid>
 
+            
             <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1">
-                <DataGrid Name="dGridScore" ItemsSource="{Binding ScoreGrid}" CanUserReorderColumns="False" CanUserSortColumns="False">
-                </DataGrid>
+                <!--<DataGrid Name="dGridScore" ItemsSource="{Binding ScoreGrid}" CanUserReorderColumns="False" CanUserSortColumns="False"/>-->
+
+                <ItemsControl ItemsSource="{Binding ScoreGrid}" Margin="5">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="1" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
             </Border>
 
         </Grid>
