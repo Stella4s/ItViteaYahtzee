@@ -16,6 +16,7 @@ namespace ItViteaYahtzee
         private Random rnd = new Random();
         private ScoreBar[] _ScoreGrid;
         private int _DiceRoll;
+        private bool _NotedPoints;
 
         public VM_RollsRules()
         {
@@ -79,16 +80,24 @@ namespace ItViteaYahtzee
                 OnPropertyChanged();
             }
         }
+        public bool NotedPoints
+        {
+            get { return _NotedPoints; }
+            set
+            {
+                _NotedPoints = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
 
         #region General Game Methods
-        //private fields for Game Methods.
-        private bool notedPoints;
+        
 
         public void NextTurn()
         {
             //Reset notedPoints to false.
-            notedPoints = false;
+            NotedPoints = false;
             //Reset DiceHolds.
             ResetDice();
         }
@@ -98,11 +107,23 @@ namespace ItViteaYahtzee
         ///</summary>
         public void UpdateIsUsed(object sender, EventArgs e)
         {
-            notedPoints = true;
+            NotedPoints = true;
             //Reset diceroll to 0.
             DiceRoll = 0;
             //Reset DiceHolds.
             ResetDice();
+            
+        }
+
+        public void BtnNotePoints(object obj)
+        {
+            int index = Convert.ToInt32(obj.ToString());
+            if (!NotedPoints)
+            {
+                NotedPoints = true;
+                ScoreGrid[index].IsUsed = true;
+            }
+           
         }
         #endregion 
 
@@ -120,7 +141,7 @@ namespace ItViteaYahtzee
         //Methods to roll the dice in the dice array.
         public void RollDice()
         {
-            if (notedPoints)
+            if (NotedPoints)
                 NextTurn();
 
             if (DiceRoll < 3)
@@ -141,9 +162,12 @@ namespace ItViteaYahtzee
 
         public void InitScoreGridEvents()
         {
+            int i = 0;
             foreach (ScoreBar bar in ScoreGrid)
             {
+                bar.Index = i;
                 bar.IsUsedChanged += UpdateIsUsed;
+                i++;
             }
         }
 
@@ -403,6 +427,13 @@ namespace ItViteaYahtzee
             get
             {
                 return new RelayCommand(RollDice);
+            }
+        }
+        public ICommand BtnNotePointsCmd
+        {
+            get
+            {
+                return new RelayCommand2(BtnNotePoints);
             }
         }
         #endregion

@@ -12,7 +12,7 @@ namespace ItViteaYahtzee
     {
         //private fields for holding the values of public properties.
         private string _Name;
-        private int _Points;
+        private int _Points, _Index;
         private bool _IsValid, _IsUsed, _AllowClick = true;
 
         //public properties
@@ -59,6 +59,15 @@ namespace ItViteaYahtzee
             set
             {
                 _AllowClick = value;
+                OnPropertyChanged();
+            }
+        }
+        public int Index
+        {
+            get { return _Index; }
+            set
+            {
+                _Index = value;
                 OnPropertyChanged();
             }
         }
