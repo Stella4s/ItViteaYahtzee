@@ -12,49 +12,53 @@
     </Window.DataContext>
 
     <Window.Resources>
-        <DataTemplate DataType="{x:Type local:ScoreBar}">
-            <Grid>
-                <Grid.Resources>
-                    <Style TargetType="{x:Type CheckBox}">
-                        <Setter Property="VerticalAlignment" Value="Center"/>
-                        <Setter Property="HorizontalAlignment" Value="Center"/>
-                    </Style>
-                    <Style TargetType="{x:Type TextBlock}">
-                        <Setter Property="VerticalAlignment" Value="Center"/>
-                    </Style>
-                </Grid.Resources>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                
-                <TextBlock Grid.Column="0" Text="{Binding Name}"/>
-                <TextBlock Grid.Column="1" Text="{Binding Points}" HorizontalAlignment="Center"/>
-                <CheckBox Grid.Column="2" IsChecked="{Binding IsValid}"/>
-                <CheckBox Grid.Column="3" IsChecked="{Binding IsUsed}"/>
-                <CheckBox Grid.Column="4" IsChecked="{Binding AllowClick}"/>
-            </Grid>
-            <!--<Border BorderBrush="Black" BorderThickness="0.5">
-                <Grid Margin="1">
+
+        <!--Test 01-->
+        <!--<DataTemplate DataType="{x:Type local:ScoreBar}">
+            <Border BorderBrush="Black" BorderThickness="0,0.5,0,0" UseLayoutRounding="False" SnapsToDevicePixels="True">
+                <Grid Name="gridBar" VerticalAlignment="Center">
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type CheckBox}">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                        </Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Padding" Value="4,0"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </Grid.Resources>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition/>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="{Binding Name}"/>
-                    <TextBlock Grid.Column="1" Text="{Binding Points}" HorizontalAlignment="Center"/>
                     
-                    <UniformGrid Rows="1" Grid.Column="2">
-                        <CheckBox Grid.Column="2" IsChecked="{Binding IsValid}"/>
-                        <CheckBox Grid.Column="3" IsChecked="{Binding IsUsed}"/>
-                        <CheckBox Grid.Column="4" IsChecked="{Binding AllowClick}"/>
-                    </UniformGrid>
-            </Grid>
-            </Border> -->
-        </DataTemplate>
+                    <TextBlock Grid.Column="0" Name="tName" Text="{Binding Name}"/>
+                    <TextBlock Grid.Column="1" Name="tPoints" Text="{Binding Points}" HorizontalAlignment="Center"/>
+                    <CheckBox Grid.Column="2" IsChecked="{Binding IsValid}"/>
+                    <CheckBox Grid.Column="3" IsChecked="{Binding IsUsed}"/>
+                    <CheckBox Grid.Column="4" IsChecked="{Binding AllowClick}"/>
+                </Grid>
+            </Border>
+            
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsValid}" Value="True">
+                    <Setter TargetName="tPoints" Property="Foreground"  Value="Red"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsUsed}" Value="True">
+                    <Setter TargetName="tPoints" Property="Foreground"  Value="Black"/>
+                    <Setter TargetName="tName" Property="TextDecorations"  Value="StrikeThrough"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding AllowClick}" Value="False">
+                    <Setter TargetName="gridBar" Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>-->
+
+       
+        
     </Window.Resources>
 
     <Grid>
@@ -97,16 +101,100 @@
             </Grid>
 
             
-            <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1">
-                <!--<DataGrid Name="dGridScore" ItemsSource="{Binding ScoreGrid}" CanUserReorderColumns="False" CanUserSortColumns="False"/>-->
+            <Border Grid.Column="1" BorderBrush="Black" BorderThickness="0.5,0,0.5,0.5">
+                
+                <!-- Test 02. Clicking checkboxes doesn't update the hold button selection.
+                <DataGrid Name="dGridScore" ItemsSource="{Binding ScoreGrid}" AutoGenerateColumns="False" 
+                          CanUserReorderColumns="False" CanUserSortColumns="False"  
+                          HeadersVisibility="Column" VerticalContentAlignment="Center">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                        <DataGridTextColumn Header="Points" Binding="{Binding Points}"/>
+                        <DataGridCheckBoxColumn Header="Valid" Binding="{Binding IsValid}"/>
+                        <DataGridCheckBoxColumn Header="Used" Binding="{Binding IsUsed}"/>
+                        <DataGridCheckBoxColumn Header="Click" Binding="{Binding AllowClick}"/>
+                    </DataGrid.Columns>
+                </DataGrid>-->
 
-                <ItemsControl ItemsSource="{Binding ScoreGrid}" Margin="5">
+                <!-- For test 01.-->
+                <!--  <ItemsControl ItemsSource="{Binding ScoreGrid}" Margin="0">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <UniformGrid Columns="1" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
-                </ItemsControl>
+                </ItemsControl>-->
+
+                <!-- For test 02. I do not need the rows to be selectable, or to order. I get a lot of fucntions I don't need and no easier way to apply the fuctions I do want. -->
+                <!--<ListView ItemsSource="{Binding ScoreGrid}" HorizontalContentAlignment="Stretch">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn DisplayMemberBinding="{Binding Name}"/>
+                            <GridViewColumn DisplayMemberBinding="{Binding Points}"/>
+                            <GridViewColumn DisplayMemberBinding="{Binding IsValid}"/>
+                            <GridViewColumn DisplayMemberBinding="{Binding IsUsed}"/>
+                            <GridViewColumn DisplayMemberBinding="{Binding AllowClick}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView> -->
+
+                <!-- Test 03. Same idea as prior itemsControl. Only all defined in same place. Still makes me run into the issue where the rows won't adjust in a way they line up if auto sized.-->
+                <!-- <ItemsControl ItemsSource="{Binding ScoreGrid}">
+                    <ItemsControl.Template>
+                        <ControlTemplate TargetType="ItemsControl">
+                            <Border BorderBrush="Black" BorderThickness="1">
+                                <ItemsPresenter/>
+                            </Border>
+                        </ControlTemplate>
+                    </ItemsControl.Template>
+                    
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <DataTemplate.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontSize" Value="18"/>
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataTemplate.Resources>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" Text="{Binding Name}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Points}"/>
+                                <CheckBox Grid.Column="2" IsChecked="{Binding IsValid}"/>
+                                <CheckBox Grid.Column="3" IsChecked="{Binding IsUsed}"/>
+                                <CheckBox Grid.Column="4" IsChecked="{Binding AllowClick}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    
+                    <ItemsControl.ItemContainerStyle>
+                        <Style>
+                            <Setter Property="Control.Margin" Value="5"/>
+                            <Style.Triggers>
+                                <Trigger Property="Control.IsMouseOver" Value="True">
+                                    <Setter Property="Control.ToolTip"
+                  Value="{Binding RelativeSource={x:Static RelativeSource.Self},
+                          Path=Content.Description}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                </ItemsControl> -->
+                
+                
             </Border>
 
         </Grid>
