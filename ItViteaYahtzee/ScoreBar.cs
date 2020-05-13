@@ -62,7 +62,7 @@ namespace ItViteaYahtzee
                 OnPropertyChanged();
             }
         }
-        public int Index
+       /* public int Index
         {
             get { return _Index; }
             set
@@ -70,7 +70,7 @@ namespace ItViteaYahtzee
                 _Index = value;
                 OnPropertyChanged();
             }
-        }
+        }*/
 
 
         #region INotifyPropertyChanged Members  

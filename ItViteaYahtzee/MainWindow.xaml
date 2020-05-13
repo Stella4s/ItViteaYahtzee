@@ -13,27 +13,19 @@
 
     <Window.Resources>
 
-        <Style x:Key="styleRowBtn" TargetType="{x:Type Button}">
+        <Style x:Key="styleRowBtn" TargetType="{x:Type ToggleButton}">
             <Setter Property="Background" Value="WhiteSmoke"/>
             <Setter Property="BorderThickness" Value="0"/>
         </Style>
-        
-        <ControlTemplate x:Key="ctrlTempRowBtn" TargetType="{x:Type Button}">
-            <Grid>
-                <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-            </Grid>
-        </ControlTemplate>
 
-        <!--Test 01-->
-        <DataTemplate DataType="{x:Type local:ScoreBar}">
+        <DataTemplate x:Key="DataTGridBar">
             <Border BorderBrush="Black" BorderThickness="0,0.5,0,0" UseLayoutRounding="False" SnapsToDevicePixels="True">
 
-                <Button x:Name="rowBtn" 
-                              Style="{DynamicResource styleRowBtn}" 
-                              HorizontalContentAlignment="Stretch"  VerticalContentAlignment="Stretch"
-                              IsEnabled="False"
-                              Command="{Binding BtnNotePointsCmd, Mode=OneWay}" CommandParameter="{Binding ScoreGrid/Index}"
-                              >
+                <ToggleButton x:Name="rowBtn"
+                             Style="{DynamicResource styleRowBtn}"
+                             HorizontalContentAlignment="Stretch"  VerticalContentAlignment="Stretch"
+                             IsEnabled="False"
+                             IsChecked="{Binding IsUsed}">
 
                     <Grid x:Name="gridBar" VerticalAlignment="Center">
                         <Grid.Resources>
@@ -53,14 +45,13 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-
-                        <TextBlock Grid.Column="0" x:Name="tName" Text="{Binding Name}"/>
+                        <TextBlock Grid.Column="0"  x:Name="tName" Text="{Binding Name}"/>
                         <TextBlock Grid.Column="1" x:Name="tPoints" Text="{Binding Points}" HorizontalAlignment="Center"/>
                         <CheckBox Grid.Column="2" IsChecked="{Binding IsValid}"/>
                         <CheckBox Grid.Column="3" IsChecked="{Binding IsUsed}"/>
                         <CheckBox Grid.Column="4" IsChecked="{Binding AllowClick}"/>
                     </Grid>
-                </Button>
+                </ToggleButton>
             </Border>
 
             <DataTemplate.Triggers>
@@ -76,27 +67,8 @@
                 <DataTrigger Binding="{Binding AllowClick}" Value="False">
                     <Setter TargetName="rowBtn" Property="IsEnabled" Value="False"/>
                 </DataTrigger>
-                <!--If points have been noted for this round. Disable all buttons so user can't re-use the same roll for points.-->
-                <DataTrigger Binding="{Binding NotedPoints}" Value="True">
-                    <Setter TargetName="rowBtn" Property="IsEnabled" Value="False"/>
-                </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
-
-        <!--<ControlTemplate x:Key="ctrlTempScore" TargetType="ItemsControl">
-            
-            <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
-                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-            </Border>
-            
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>-->
-
-
     </Window.Resources>
 
     <Grid>
@@ -141,21 +113,8 @@
 
             <Border Grid.Column="1" BorderBrush="Black" BorderThickness="0.5,0,0.5,0.5">
 
-                <!-- Test 02. Clicking checkboxes doesn't update the hold button selection.
-                <DataGrid Name="dGridScore" ItemsSource="{Binding ScoreGrid}" AutoGenerateColumns="False" 
-                          CanUserReorderColumns="False" CanUserSortColumns="False"  
-                          HeadersVisibility="Column" VerticalContentAlignment="Center">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
-                        <DataGridTextColumn Header="Points" Binding="{Binding Points}"/>
-                        <DataGridCheckBoxColumn Header="Valid" Binding="{Binding IsValid}"/>
-                        <DataGridCheckBoxColumn Header="Used" Binding="{Binding IsUsed}"/>
-                        <DataGridCheckBoxColumn Header="Click" Binding="{Binding AllowClick}"/>
-                    </DataGrid.Columns>
-                </DataGrid>-->
-
-                <!-- For test 01.-->
-                <ItemsControl ItemsSource="{Binding ScoreGrid}" Margin="0">
+                <!--To prevent the same diceroll to be used for filling in points in multiple rows. Grid disables when Points haven't been noted yet.-->
+                <ItemsControl ItemsSource="{Binding ScoreGrid}" Margin="0" ItemTemplate="{DynamicResource DataTGridBar}" IsEnabled="{Binding NoNotedPoints}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <UniformGrid Columns="1" />

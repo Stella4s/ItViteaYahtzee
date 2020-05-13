@@ -16,7 +16,7 @@ namespace ItViteaYahtzee
         private Random rnd = new Random();
         private ScoreBar[] _ScoreGrid;
         private int _DiceRoll;
-        private bool _NotedPoints;
+        private bool _NoNotedPoints;
 
         public VM_RollsRules()
         {
@@ -28,7 +28,8 @@ namespace ItViteaYahtzee
                 new Dice {Number = 1, IsHeld = false },
                 new Dice {Number = 1, IsHeld = false }
             };
-            ResetDice();
+            //Includes both ResetDice as well as setting NoNotedPoints to true.
+            NextTurn();
 
             _ScoreGrid = new ScoreBar[]
             {
@@ -80,12 +81,12 @@ namespace ItViteaYahtzee
                 OnPropertyChanged();
             }
         }
-        public bool NotedPoints
+        public bool NoNotedPoints
         {
-            get { return _NotedPoints; }
+            get { return _NoNotedPoints; }
             set
             {
-                _NotedPoints = value;
+                _NoNotedPoints = value;
                 OnPropertyChanged();
             }
         }
@@ -97,7 +98,7 @@ namespace ItViteaYahtzee
         public void NextTurn()
         {
             //Reset notedPoints to false.
-            NotedPoints = false;
+            NoNotedPoints = true;
             //Reset DiceHolds.
             ResetDice();
         }
@@ -107,23 +108,11 @@ namespace ItViteaYahtzee
         ///</summary>
         public void UpdateIsUsed(object sender, EventArgs e)
         {
-            NotedPoints = true;
+            NoNotedPoints = false;
             //Reset diceroll to 0.
             DiceRoll = 0;
             //Reset DiceHolds.
             ResetDice();
-            
-        }
-
-        public void BtnNotePoints(object obj)
-        {
-            int index = Convert.ToInt32(obj.ToString());
-            if (!NotedPoints)
-            {
-                NotedPoints = true;
-                ScoreGrid[index].IsUsed = true;
-            }
-           
         }
         #endregion 
 
@@ -141,7 +130,7 @@ namespace ItViteaYahtzee
         //Methods to roll the dice in the dice array.
         public void RollDice()
         {
-            if (NotedPoints)
+            if (!NoNotedPoints)
                 NextTurn();
 
             if (DiceRoll < 3)
@@ -162,12 +151,13 @@ namespace ItViteaYahtzee
 
         public void InitScoreGridEvents()
         {
-            int i = 0;
+            //Index not used.
+            //int i = 0;
             foreach (ScoreBar bar in ScoreGrid)
             {
-                bar.Index = i;
+                //bar.Index = i;
                 bar.IsUsedChanged += UpdateIsUsed;
-                i++;
+                //i++;
             }
         }
 
@@ -427,13 +417,6 @@ namespace ItViteaYahtzee
             get
             {
                 return new RelayCommand(RollDice);
-            }
-        }
-        public ICommand BtnNotePointsCmd
-        {
-            get
-            {
-                return new RelayCommand2(BtnNotePoints);
             }
         }
         #endregion

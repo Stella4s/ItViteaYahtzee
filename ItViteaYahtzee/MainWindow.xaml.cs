@@ -25,6 +25,5 @@ namespace ItViteaYahtzee
         {
             InitializeComponent();
         }
-
     }
 }
