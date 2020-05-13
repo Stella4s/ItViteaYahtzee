@@ -86,6 +86,8 @@ namespace ItViteaYahtzee
         public event EventHandler IsUsedChanged;
         private void OnIsUsedChanged(EventArgs e)
         {
+            //If AllowClick is true, invoke. (To prevent event from firing for unclickable rows.)
+            if (AllowClick)
             IsUsedChanged?.Invoke(this, e);
         }
         #endregion

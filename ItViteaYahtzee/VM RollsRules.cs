@@ -17,6 +17,8 @@ namespace ItViteaYahtzee
         private ScoreBar[] _ScoreGrid;
         private int _DiceRoll;
         private bool _NoNotedPoints;
+        private int _EndGameOpacity;
+        private int _TotalScore;
 
         public VM_RollsRules()
         {
@@ -28,8 +30,6 @@ namespace ItViteaYahtzee
                 new Dice {Number = 1, IsHeld = false },
                 new Dice {Number = 1, IsHeld = false }
             };
-            //Includes both ResetDice as well as setting NoNotedPoints to true.
-            NextTurn();
 
             _ScoreGrid = new ScoreBar[]
             {
@@ -50,7 +50,8 @@ namespace ItViteaYahtzee
                 new ScoreBar{Name = "Yahtzee"},
                 new ScoreBar{Name = "Total Score", AllowClick = false}
             };
-            InitScoreGridEvents();
+            InitializeScoreGrid();
+            StartGame();
         }
 
         #region Public properties.
@@ -90,10 +91,37 @@ namespace ItViteaYahtzee
                 OnPropertyChanged();
             }
         }
+        public int EndGameOpacity
+        {
+            get { return _EndGameOpacity; }
+            set
+            {
+                _EndGameOpacity = value;
+                OnPropertyChanged();
+            }
+        }
+        public int TotalScore
+        {
+            get { return _TotalScore; }
+            set
+            {
+                _TotalScore = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
 
         #region General Game Methods
-        
+        /// <summary>
+        /// Hides endgame area, resets Total score. Invokes other support methods for resetting.
+        /// </summary>
+        public void StartGame()
+        {
+            EndGameOpacity = 0;
+            TotalScore = 0;
+            NextTurn();
+            ResetScoreGrid();
+        }
 
         public void NextTurn()
         {
@@ -113,32 +141,42 @@ namespace ItViteaYahtzee
             DiceRoll = 0;
             //Reset DiceHolds.
             ResetDice();
+            //Updates ScoreGrid to reflect changes.
+            UpdateScoreGrid();
         }
 
         public void GameFinish()
         {
-
+            //Add all points from ScoreGrid together for TotalScore. And make EndGame area visible.
+            TotalScore = ScoreGrid[15].Points;
+            EndGameOpacity = 1;
         }
         #endregion 
 
         #region Methdods relating to DiceArray
-        //Method for Initialising/Resetting Dice Array.
+        /// <summary>
+        /// Method for Initialising/Resetting Dice Array.
+        /// </summary>
         public void ResetDice()
         {
             for (int i = 0; i < 5; i++)
             {
-                //DiceArr[i].Number = i; Don't change numbers, probably not necessary.
                 DiceArr[i].IsHeld = false;
             }
         }
 
-        //Methods to roll the dice in the dice array.
+        /// <summary>
+        /// Method to roll the dice in the dice array. 
+        /// Or not roll dice depending on properties.
+        /// </summary>
         public void RollDice()
         {
             if (!NoNotedPoints)
                 NextTurn();
 
-            if (DiceRoll < 3)
+            //Roll the dice if they have been rolled less than 3 times.
+            //And if the EndGameOpacity = 0.
+            if (DiceRoll < 3 && EndGameOpacity == 0)
             {
                 for (int i = 0; i < 5; i++)
                 {
@@ -154,7 +192,11 @@ namespace ItViteaYahtzee
 
         #region Methods relating to ScoreGrid
 
-        public void InitScoreGridEvents()
+        /// <summary>
+        /// Subscribes the UpdateIsUsed event to all the bars.
+        /// And sets the proper index for each bar.
+        /// </summary>
+        public void InitializeScoreGrid()
         {
             int i = 0;
             foreach (ScoreBar bar in ScoreGrid)
@@ -165,6 +207,22 @@ namespace ItViteaYahtzee
             }
         }
 
+        /// <summary>
+        /// Resets Points, IsUsed and IsValid back to starting values for game.
+        /// </summary>
+        public void ResetScoreGrid()
+        {
+            foreach (ScoreBar bar in ScoreGrid)
+            {
+                bar.Points = 0;
+                bar.IsUsed = false;
+                bar.IsValid = false;
+            }
+        }
+
+        /// <summary>
+        /// Updates every row in the ScoreGrid using the other supporting scoregrid methods. Is called after each DiceRoll.
+        /// </summary>
         public void UpdateScoreGrid()
         {
             int points;
@@ -239,14 +297,20 @@ namespace ItViteaYahtzee
             }
 
             //Update TotalScore. Later move elsewhere? 
-            TotalScore();
+            UpdateScore();
             CheckEntireScoreGrid();
         }
 
+        /// <summary>
+        /// Checking for if all Clickable bars are used. As well as if all remaining bars are unused and invalid. 
+        /// To make sure the user can select the invalid bars for 0 points.
+        /// </summary>
         public void CheckEntireScoreGrid()
         {
             //If all bars are used, the game is over.
-            if (ScoreGrid.All(x => x.IsUsed))
+            if (ScoreGrid.Select(group => new { group.AllowClick, group.IsUsed })
+                .Where(c => c.AllowClick == true)
+                .All(x => x.IsUsed))
             {
                 GameFinish();
             }
@@ -398,6 +462,11 @@ namespace ItViteaYahtzee
             return isFullHouse;
         }
 
+        /// <summary>
+        /// Checks for both small and large straight Returning 0, 3 or 4. 
+        /// To be used with a switch for no straight, small straight or large straight.
+        /// </summary>
+        /// <returns></returns>
         public int CheckStraight()
         {
             //Take the dice and group them. (To take care of duplicate numbers. e.g. 1 2 3 3 4. Still counts as a smallstraight.)
@@ -432,11 +501,9 @@ namespace ItViteaYahtzee
             return counter;
         }
 
-        public void TotalScore()
+        public void UpdateScore()
         {
-            //Select all Points from ScoreGrid and add them together. Then UpdateScoreBar of totalscore.
-            //int score = ScoreGrid.Select(x => x.Points).Sum();
-
+            //Select all Points from ScoreGrid from used bars and add them together. Then UpdateScoreBar of totalscore.
             int score = ScoreGrid.Select(group => new { group.Points, Used = group.IsUsed }).Where(c => c.Used == true).Sum(c => c.Points);
             UpdateScoreBar(15, score);
         }
@@ -450,6 +517,13 @@ namespace ItViteaYahtzee
             get
             {
                 return new RelayCommand(RollDice);
+            }
+        }
+        public ICommand NewGameCmd
+        {
+            get
+            {
+                return new RelayCommand(StartGame);
             }
         }
         #endregion
