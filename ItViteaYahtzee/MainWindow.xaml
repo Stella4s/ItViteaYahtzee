@@ -13,51 +13,88 @@
 
     <Window.Resources>
 
+        <local:ScoreBarDataTemplateSelector x:Key="ScoreBarDTSelector"/>
+
         <Style x:Key="styleRowBtn" TargetType="{x:Type ToggleButton}">
-            <Setter Property="Background" Value="WhiteSmoke"/>
+            <Setter Property="Background" Value="LightGray"/>
             <Setter Property="BorderThickness" Value="0"/>
         </Style>
 
-        <DataTemplate x:Key="DataTGridBar">
-            <Border BorderBrush="DarkGray" BorderThickness="0,1,0,0" UseLayoutRounding="true" SnapsToDevicePixels="True">
+        <Style x:Key="styleRowBtn2" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource styleRowBtn}">
+            <Setter Property="Background" Value="White"/>
+        </Style>
 
-                <ToggleButton x:Name="rowBtn"
+        <ControlTemplate x:Key="ToggleBtnControlTemplate1" TargetType="{x:Type ToggleButton}">
+            <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Button.IsDefaulted" Value="True">
+                    <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" TargetName="border" Value="#FFBEE6FD"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FF3C7FB1"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" TargetName="border" Value="#FFC4E5F6"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FF2C628B"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Background" TargetName="border" Value="#FFBCDDEE"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FF245A83"/>
+                </Trigger>
+                <!--
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" TargetName="border" Value="#FFF4F4F4"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FFADB2B5"/>
+                    <Setter Property="Foreground" Value="#FF838383"/>
+                </Trigger>-->
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <DataTemplate x:Key="DataTGridBar1">
+
+
+            <ToggleButton x:Name="rowBtn"
                              Style="{DynamicResource styleRowBtn}"
                              HorizontalContentAlignment="Stretch"  VerticalContentAlignment="Stretch"
                              IsEnabled="False"
                              IsChecked="{Binding IsUsed}">
 
-                    <Grid x:Name="gridBar" VerticalAlignment="Center">
-                        <Grid.Resources>
-                            <Style TargetType="{x:Type CheckBox}">
-                                <Setter Property="VerticalAlignment" Value="Center"/>
-                                <Setter Property="HorizontalAlignment" Value="Center"/>
-                            </Style>
-                            <Style TargetType="{x:Type TextBlock}">
-                                <Setter Property="Padding" Value="4,0"/>
-                                <Setter Property="VerticalAlignment" Value="Center"/>
-                            </Style>
-                        </Grid.Resources>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"/>
+                <Grid x:Name="gridBar" VerticalAlignment="Center">
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type CheckBox}">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                        </Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Padding" Value="4,0"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition/>
+                        <!--
                             <ColumnDefinition/>
                             <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0"  x:Name="tName" Text="{Binding Name}"/>
-                        <TextBlock Grid.Column="1" x:Name="tPoints" Text="{Binding Points}" HorizontalAlignment="Center"/>
+                            <ColumnDefinition/>-->
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"  x:Name="tName" Text="{Binding Name}"/>
+                    <TextBlock Grid.Column="1" x:Name="tPoints" Text="{Binding Points}" HorizontalAlignment="Center"/>
+                    <!-- Visual for development only. To be hidden in final version.-->
+                    <!--
                         <CheckBox Grid.Column="2" IsChecked="{Binding IsValid}"/>
                         <CheckBox Grid.Column="3" IsChecked="{Binding IsUsed}"/>
-                        <CheckBox Grid.Column="4" IsChecked="{Binding AllowClick}"/>
-                    </Grid>
-                </ToggleButton>
-            </Border>
-
+                        <CheckBox Grid.Column="4" IsChecked="{Binding AllowClick}"/>-->
+                </Grid>
+            </ToggleButton>
             <DataTemplate.Triggers>
                 <DataTrigger Binding="{Binding IsValid}" Value="True">
                     <Setter TargetName="tPoints" Property="Foreground"  Value="Red"/>
                     <Setter TargetName="rowBtn" Property="IsEnabled" Value="True"/>
+                    <Setter TargetName="rowBtn" Property="Background" Value="WhiteSmoke"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsUsed}" Value="True">
                     <Setter TargetName="tPoints" Property="Foreground"  Value="Black"/>
@@ -69,6 +106,47 @@
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
+       
+
+        <DataTemplate x:Key="DataTGridBar2" >
+            <Border BorderBrush="DarkGray" BorderThickness="0,0,0,0" UseLayoutRounding="true" SnapsToDevicePixels="True">
+
+                <ToggleButton x:Name="rowBtn"
+                             Style="{DynamicResource styleRowBtn2}"
+                             HorizontalContentAlignment="Stretch"  VerticalContentAlignment="Stretch"
+                             IsEnabled="False"
+                             IsChecked="{Binding IsUsed}" Template="{DynamicResource ToggleBtnControlTemplate1}">
+
+                    <Grid x:Name="gridBar" VerticalAlignment="Center">
+                        <Grid.Resources>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="Padding" Value="4,0"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </Grid.Resources>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"  x:Name="tName" Text="{Binding Name}"/>
+                        <TextBlock Grid.Column="1" x:Name="tPoints" Text="{Binding Points}" HorizontalAlignment="Center"/>
+                    </Grid>
+                </ToggleButton>
+            </Border>
+
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsUsed}" Value="True">
+                    <Setter TargetName="tPoints" Property="Foreground"  Value="Black"/>
+                    <Setter TargetName="tName" Property="TextDecorations"  Value="StrikeThrough"/>
+                    <Setter TargetName="rowBtn" Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding AllowClick}" Value="False">
+                    <Setter TargetName="rowBtn" Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
     </Window.Resources>
 
     <Grid>
@@ -79,7 +157,7 @@
             </Grid.ColumnDefinitions>
 
 
-            <Grid Background="WhiteSmoke">
+            <Grid Background="WhiteSmoke" Margin="2">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
@@ -112,7 +190,7 @@
                         <TextBlock  Text="Rolls: " />
                         <TextBlock  Text="{Binding DiceRoll}"/>
                     </StackPanel>
-                    
+
                     <StackPanel HorizontalAlignment="Center" Opacity="{Binding EndGameOpacity}">
                         <TextBlock Text="End of game." TextAlignment="Center"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -129,17 +207,17 @@
             </Grid>
 
 
-            <Border Grid.Column="1" BorderBrush="Black" BorderThickness="0.5,0,0.5,0.5">
+            <Border Grid.Column="1" BorderBrush="Black" BorderThickness="0.5,0,0.5,0.5" Margin="2">
 
                 <!--To prevent the same diceroll to be used for filling in points in multiple rows. Grid disables when Points haven't been noted yet.-->
-                <ItemsControl ItemsSource="{Binding ScoreGrid}" Margin="0" ItemTemplate="{DynamicResource DataTGridBar}" IsEnabled="{Binding NoNotedPoints}">
+                <ItemsControl ItemsSource="{Binding ScoreGrid}" 
+                              IsEnabled="{Binding NoNotedPoints}" ItemTemplateSelector="{DynamicResource ScoreBarDTSelector}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <UniformGrid Columns="1" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
-
 
             </Border>
 

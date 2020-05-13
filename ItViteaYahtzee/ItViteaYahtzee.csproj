@@ -57,6 +57,7 @@
     </ApplicationDefinition>
     <Compile Include="RelayCommand.cs" />
     <Compile Include="ScoreBar.cs" />
+    <Compile Include="ScoreBarDataTemplateSelector.cs" />
     <Compile Include="VM RollsRules.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

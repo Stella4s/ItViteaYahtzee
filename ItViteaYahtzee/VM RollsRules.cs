@@ -214,9 +214,9 @@ namespace ItViteaYahtzee
         {
             foreach (ScoreBar bar in ScoreGrid)
             {
-                bar.Points = 0;
                 bar.IsUsed = false;
                 bar.IsValid = false;
+                bar.Points = 0;
             }
         }
 
