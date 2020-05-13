@@ -114,6 +114,11 @@ namespace ItViteaYahtzee
             //Reset DiceHolds.
             ResetDice();
         }
+
+        public void GameFinish()
+        {
+
+        }
         #endregion 
 
         #region Methdods relating to DiceArray
@@ -151,13 +156,12 @@ namespace ItViteaYahtzee
 
         public void InitScoreGridEvents()
         {
-            //Index not used.
-            //int i = 0;
+            int i = 0;
             foreach (ScoreBar bar in ScoreGrid)
             {
-                //bar.Index = i;
+                bar.Index = i;
                 bar.IsUsedChanged += UpdateIsUsed;
-                //i++;
+                i++;
             }
         }
 
@@ -234,8 +238,33 @@ namespace ItViteaYahtzee
                     break;
             }
 
-            //Update TotalScore. Later moved elsewhere? 
+            //Update TotalScore. Later move elsewhere? 
             TotalScore();
+            CheckEntireScoreGrid();
+        }
+
+        public void CheckEntireScoreGrid()
+        {
+            //If all bars are used, the game is over.
+            if (ScoreGrid.All(x => x.IsUsed))
+            {
+                GameFinish();
+            }
+  
+            //If all unused, clickable options are not valid. Make them valid. (Using index to ONLY make those Valid.)
+            var tempGrid = ScoreGrid.Select(group => new { group.IsValid, Used = group.IsUsed, group.AllowClick, group.Index })
+                .Where(c => c.Used == false)
+                .Where(c => c.AllowClick == true);
+
+            if (tempGrid.All(x => x.IsValid.Equals(false)))
+            {
+                var tempArray = tempGrid.Select(x => x.Index).ToArray();
+                foreach (int index in tempArray)
+                {
+                    ScoreGrid[index].IsValid = true;
+                }
+            }
+          
         }
 
         /// <summary>
@@ -393,8 +422,12 @@ namespace ItViteaYahtzee
                 {
                     itemB = itemA;
                     itemA = straightList[i].Num;
+                    //Counter goes up for each item that only has 1 difference with the last. 
+                    //Going down for each item that does not. (To prevent for example 1 2 3 5 6 being counted as a small straight.)
                     if (itemA - itemB == 1)
                         counter++;
+                    else
+                        counter--;
                 }
             return counter;
         }
