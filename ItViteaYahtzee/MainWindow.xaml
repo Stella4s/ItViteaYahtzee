@@ -87,7 +87,7 @@
 
 
             <ToggleButton x:Name="rowBtn"
-                             Style="{DynamicResource styleRowBtn}" Template="{StaticResource ToggleBtnControlTemplate1}"
+                             Style="{StaticResource styleRowBtn}" Template="{StaticResource ToggleBtnControlTemplate1}"
                              HorizontalContentAlignment="Stretch"  VerticalContentAlignment="Stretch"
                              IsEnabled="False"
                              IsChecked="{Binding IsUsed}">
@@ -150,7 +150,7 @@
                     <Grid x:Name="gridBar" VerticalAlignment="Center">
                         <Grid.Resources>
                             <Style TargetType="{x:Type TextBlock}">
-                                <Setter Property="Padding" Value="4,0"/>
+                                <Setter Property="Padding" Value="0,0"/>
                                 <Setter Property="VerticalAlignment" Value="Center"/>
                             </Style>
                         </Grid.Resources>
@@ -240,7 +240,7 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Button Name="btnRoll" Grid.Column="1" Content="Roll" Width="150" Height="50" Margin="5" Command="{Binding GetDiceCmd}" />
-                <Button Name="btnWeightDice" Grid.Column="2" Content="Weighted Dice" Width="150" Height="50" Margin="5" Command="{Binding WeightedDiceCmd}" />
+                    <Button Name="btnWeightDice" Grid.Column="2" Content="Weighted Dice" Width="150" Height="50" Margin="5" Command="{Binding WeightedDiceCmd}" />
                 </Grid>
 
             </Grid>

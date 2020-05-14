@@ -145,6 +145,7 @@ namespace ItViteaYahtzee
             UpdateScoreGrid();
         }
 
+
         public void GameFinish()
         {
             //Add all points from ScoreGrid together for TotalScore. And make EndGame area visible.
@@ -199,6 +200,7 @@ namespace ItViteaYahtzee
         public void InitializeScoreGrid()
         {
             int i = 0;
+            //Connected UpdateIsUsed to IsUsedChanged Event.
             foreach (ScoreBar bar in ScoreGrid)
             {
                 bar.Index = i;
@@ -263,7 +265,7 @@ namespace ItViteaYahtzee
                 case 5:
                     UpdateScoreBar(8, points);
                     UpdateScoreBar(9, points);
-                    Yahtzee();
+                    UpdateScoreBar(14, 50);
                     break;
                 default:
                     break;
@@ -296,7 +298,7 @@ namespace ItViteaYahtzee
                     break;
             }
 
-            //Update TotalScore. Later move elsewhere? 
+            //Update TotalScore & CheckEntire grid for either no valid options or all options being used. 
             UpdateScore();
             CheckEntireScoreGrid();
         }
@@ -515,31 +517,6 @@ namespace ItViteaYahtzee
             UpdateScoreBar(15, score);
         }
 
-        private bool yahtzee = false;
-        /// <summary>
-        /// Is called when Yahtzee occurs. To handle the yahtzee bonus points if the conditions apply.
-        /// </summary>
-        public void Yahtzee()
-        {
-            int points = ScoreGrid[14].Points;
-            //If yahtzee is true (Meaning there has been a yahtzee before.) 
-            //And if row 14 is not 0 points. (Meaning it has neither been given up for 0 points nor not selected previous yahtzee.)
-            //And row 14 is used.
-            if (yahtzee && (points != 0) && ScoreGrid[14].IsUsed)
-            {
-                //Set IsUsed to false as to allow ScoreGrid method to update the Yahtzee.
-                ScoreGrid[14].IsUsed = false;
-
-                //Then update the Yahtzee score with the +100 bonus.
-                points += 100;
-                UpdateScoreBar(14, points);
-            }
-            //Otherwise if there was no previous Yahtzee or previously the Yahtzee was not selected (but was not used up). 
-            //Update the scorebar with 50 standard points.
-            UpdateScoreBar(14, 50);
-       
-            yahtzee = true;
-        }
 
         #endregion
 
