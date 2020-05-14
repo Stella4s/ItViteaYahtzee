@@ -11,8 +11,17 @@ namespace ItViteaYahtzee
     public class Dice : INotifyPropertyChanged
     {
         //Private fields for holding the values of public properties.
-        int _Number;
+        int _Number, _CheatNumber;
         bool _IsHeld;
+        int[] _NumberArray;
+
+        public Dice()
+        {
+            _NumberArray = new int[]
+            {
+                1, 2, 3, 4, 5, 6
+            };
+        }
 
         //Public properties.
         //One to track the die number, one to track if the die is being held to check if it should be re-rolled or not.
@@ -32,6 +41,26 @@ namespace ItViteaYahtzee
             set
             {
                 _IsHeld = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int CheatNumber
+        {
+            get { return _CheatNumber; }
+            set
+            {
+                _CheatNumber = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int[] NumberArray
+        {
+            get { return _NumberArray; }
+            set
+            {
+                _NumberArray = value;
                 OnPropertyChanged();
             }
         }

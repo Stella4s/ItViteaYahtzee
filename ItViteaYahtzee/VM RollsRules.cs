@@ -478,7 +478,8 @@ namespace ItViteaYahtzee
 
             int itemA = straightList[0].Num, 
                 itemB, 
-                counter = 0;
+                counter = 0,
+                consecutive = 0;
             //ItemA starts at smallest number. (Either 1 or 2). 
             //For loop makes ItemB ItemA. Then ItemA the number i, the next index in the list.
             //If ItemA - ItemB = 1 then the numbers are sequential and the counter goes up.
@@ -492,12 +493,18 @@ namespace ItViteaYahtzee
                     itemB = itemA;
                     itemA = straightList[i].Num;
                     //Counter goes up for each item that only has 1 difference with the last. 
-                    //Going down for each item that does not. (To prevent for example 1 2 3 5 6 being counted as a small straight.)
+                    //Separate consecutive counter. (To prevent for example 1 2 3 5 6 being counted as a small straight.)
                     if (itemA - itemB == 1)
+                    {
                         counter++;
+                        consecutive++;
+                    }
                     else
-                        counter--;
+                        consecutive = 0;
                 }
+            //If the row of consecutive numbers is smaller than 3. It's not a straight.
+            if (consecutive < 3)
+                counter = 0;
             return counter;
         }
 
@@ -510,6 +517,30 @@ namespace ItViteaYahtzee
 
         #endregion
 
+        #region game testing methods.
+
+        /// <summary>
+        /// Set all the dice numbers to the numbers selected in the comboboxes.
+        /// </summary>
+        public void WeightedDice()
+        {
+            if (!NoNotedPoints)
+                NextTurn();
+
+            //Roll the dice if the EndGameOpacity == 0.
+            if (EndGameOpacity == 0)
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    //If the die is NOT held, then roll.
+                    if (!DiceArr[i].IsHeld)
+                        DiceArr[i].Number = DiceArr[i].CheatNumber;
+                }
+                UpdateScoreGrid();
+                DiceRoll++;
+            }
+        }
+        #endregion
 
         #region Commands
         public ICommand GetDiceCmd
@@ -524,6 +555,13 @@ namespace ItViteaYahtzee
             get
             {
                 return new RelayCommand(StartGame);
+            }
+        }
+        public ICommand WeightedDiceCmd
+        {
+            get
+            {
+                return new RelayCommand(WeightedDice);
             }
         }
         #endregion

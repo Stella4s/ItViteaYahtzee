@@ -21,7 +21,7 @@
         </Style>
 
         <Style x:Key="styleRowBtn2" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource styleRowBtn}">
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="LightGray"/>
         </Style>
 
         <ControlTemplate x:Key="ToggleBtnControlTemplate1" TargetType="{x:Type ToggleButton}">
@@ -40,10 +40,40 @@
                     <Setter Property="Background" TargetName="border" Value="#FFC4E5F6"/>
                     <Setter Property="BorderBrush" TargetName="border" Value="#FF2C628B"/>
                 </Trigger>
-                <Trigger Property="IsChecked" Value="True">
+                <!--<Trigger Property="IsChecked" Value="True">
                     <Setter Property="Background" TargetName="border" Value="#FFBCDDEE"/>
                     <Setter Property="BorderBrush" TargetName="border" Value="#FF245A83"/>
+                </Trigger>-->
+
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" TargetName="border" Value="lightgray"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FFADB2B5"/>
+                    <Setter Property="Foreground" Value="dimgray"/>
                 </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+
+        <ControlTemplate x:Key="ToggleBtnControlTemplate2" TargetType="{x:Type ToggleButton}">
+            <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Button.IsDefaulted" Value="True">
+                    <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" TargetName="border" Value="#FFBEE6FD"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FF3C7FB1"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" TargetName="border" Value="#FFC4E5F6"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FF2C628B"/>
+                </Trigger>
+                <!--<Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Background" TargetName="border" Value="#FFBCDDEE"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FF245A83"/>
+                </Trigger>-->
                 <!--
                 <Trigger Property="IsEnabled" Value="False">
                     <Setter Property="Background" TargetName="border" Value="#FFF4F4F4"/>
@@ -57,7 +87,7 @@
 
 
             <ToggleButton x:Name="rowBtn"
-                             Style="{DynamicResource styleRowBtn}"
+                             Style="{DynamicResource styleRowBtn}" Template="{StaticResource ToggleBtnControlTemplate1}"
                              HorizontalContentAlignment="Stretch"  VerticalContentAlignment="Stretch"
                              IsEnabled="False"
                              IsChecked="{Binding IsUsed}">
@@ -109,13 +139,13 @@
        
 
         <DataTemplate x:Key="DataTGridBar2" >
-            <Border BorderBrush="DarkGray" BorderThickness="0,0,0,0" UseLayoutRounding="true" SnapsToDevicePixels="True">
+            <Border BorderBrush="DarkGray" BorderThickness="0,1" UseLayoutRounding="true" SnapsToDevicePixels="True">
 
                 <ToggleButton x:Name="rowBtn"
                              Style="{DynamicResource styleRowBtn2}"
                              HorizontalContentAlignment="Stretch"  VerticalContentAlignment="Stretch"
                              IsEnabled="False"
-                             IsChecked="{Binding IsUsed}" Template="{DynamicResource ToggleBtnControlTemplate1}">
+                             IsChecked="{Binding IsUsed}" Template="{DynamicResource ToggleBtnControlTemplate2}">
 
                     <Grid x:Name="gridBar" VerticalAlignment="Center">
                         <Grid.Resources>
@@ -174,6 +204,8 @@
                             <StackPanel>
                                 <TextBlock FontSize="20" Text="{Binding Number}" HorizontalAlignment="Center"/>
                                 <ToggleButton Content="Hold" IsChecked="{Binding IsHeld, Mode=TwoWay}"/>
+                                <ComboBox ItemsSource="{Binding NumberArray}" SelectedItem="{Binding CheatNumber}">
+                                </ComboBox>
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -201,8 +233,15 @@
                     </StackPanel>
                 </DockPanel>
 
-                <Button Name="btnRoll" Grid.Row="2" Content="Roll" Width="150" Height="50" Margin="5" Command="{Binding GetDiceCmd}" />
-
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Button Name="btnRoll" Grid.Column="1" Content="Roll" Width="150" Height="50" Margin="5" Command="{Binding GetDiceCmd}" />
+                <Button Name="btnWeightDice" Grid.Column="2" Content="Weighted Dice" Width="150" Height="50" Margin="5" Command="{Binding WeightedDiceCmd}" />
+                </Grid>
 
             </Grid>
 
