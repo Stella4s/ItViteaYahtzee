@@ -204,6 +204,9 @@
             </Button>
 
             <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsValid}" Value="false">
+                    <Setter TargetName="rowBtn" Property="IsEnabled" Value="False"/>
+                </DataTrigger>
                 <DataTrigger Binding="{Binding IsValid}" Value="True">
                     <Setter TargetName="tPoints" Property="Foreground"  Value="Red"/>
                     <Setter TargetName="rowBtn" Property="IsEnabled" Value="True"/>

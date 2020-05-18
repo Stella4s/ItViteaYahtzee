@@ -129,6 +129,7 @@ namespace ItViteaYahtzee
             NoNotedPoints = true;
             //Reset DiceHolds.
             ResetDice();
+            yahtzeeUpdateSwitch = true;
         }
 
         ///<summary>Updates the points being used to true to keep track of if the player has noted their points for this round.
@@ -142,6 +143,7 @@ namespace ItViteaYahtzee
             //Reset DiceHolds.
             ResetDice();
             //Updates ScoreGrid to reflect changes.
+            yahtzeeUpdateSwitch = false;
             UpdateScoreGrid();
         }
 
@@ -250,23 +252,22 @@ namespace ItViteaYahtzee
                 case 0:
                     UpdateScoreBar(8, 0);
                     UpdateScoreBar(9, 0);
-                    UpdateScoreBar(14, 0);
+                    UpdateYahtzee(14, false);
                     break;
                 case 3:
                     UpdateScoreBar(8, points);
                     UpdateScoreBar(9, 0);
-                    UpdateScoreBar(14, 0);
+                    UpdateYahtzee(14, false);
                     break;
                 case 4:
                     UpdateScoreBar(8, points);
                     UpdateScoreBar(9, points);
-                    UpdateScoreBar(14, 0);
+                    UpdateYahtzee(14, false);
                     break;
                 case 5:
                     UpdateScoreBar(8, points);
                     UpdateScoreBar(9, points);
-                    //UpdateScoreBar(14, 50);
-                    UpdateYahtzee(14);
+                    UpdateYahtzee(14, true);
                     break;
                 default:
                     break;
@@ -518,36 +519,60 @@ namespace ItViteaYahtzee
             UpdateScoreBar(15, score);
         }
 
-        //Counter to keep track of amount of times Yahtzee has been selected.
-        private int yahtzeeCounter = 0;
-        //yahtzee Points to keep track of the current amount of points. (And to reset the bar back to if yahtzee wasn't selected even if available.)
-        private int yahtzeePoints = 0;
-        //Switch for when updateYahtzee is called. First time show possible points. Second time set points to yahtzeePoints. 
-        //YahtzeePoints will be the same as the prior points if Yahtzee was clicked. But will reset to prior points if yahtzee wasn't clicked.
-        private bool yahtzeeUpdateSwitch = true;
+
+        #region yahtzee variables
         /// <summary>
-        /// For updating the Yahtzee bar with according points. Method is only called when it has already been determined there is a yahtzee.
+        /// Counter to keep track of how many times yahtzee has been selected.
         /// </summary>
-        /// <param name="index"></param>
-        public void UpdateYahtzee(int index)
+        private int yahtzeeCounter = 0;
+        /// <summary>
+        /// yahtzeePoints allow for yahtzeebar's points to be returned to previous amount if the yahtzeebar was not selected by the user.
+        /// It only updates if the ClickYahtzee method is called. 
+        /// </summary>
+        private int yahtzeePoints = 0;
+        /// <summary>
+        /// bool to switch between displaying the possible points and current yahtzeePoints.
+        /// switch is set to true each turn. And false when UpdateIsUSed event is called.
+        /// Setting the yathzeebar's points to yahtzeePoints
+        /// </summary>
+        private bool yahtzeeUpdateSwitch = true;
+        #endregion
+
+        /// <summary>
+        /// Method called instead of UpdateScoreBar method for the Yahtzee bar. 
+        /// Updates the points accordingly, determining the amount of bonus points with the yahtzeecounter.
+        /// And using the yahtzeeUpdateSwitch to allow the possible new points to be visible.
+        /// Whilst returning to the previous points if the user does not select the yahtzeebar.
+        /// </summary>
+        /// <param name="index">Used to determine which bar to update.</param>
+        /// <param name="valid">A bool to determine if the method is called with a valid yahtzee or invalid. 
+        /// Setting the yahtzeebar.IsValid to true or false to regulate it being clickable or not.</param>
+        public void UpdateYahtzee(int index, bool valid)
         {
-            //If Yahtzee isn't used with zero points. (Aka. Hasn't been given up for zero points.)
-            if (!(ScoreGrid[index].IsUsed && ScoreGrid[index].Points == 0))
+            //If method is called with valid = true there is a yahtzee. 
+            if (valid)
             {
-                if (yahtzeeUpdateSwitch)
+                //If Yahtzee isn't used with zero points. (Aka. Hasn't been given up for zero points.)
+                if (!(ScoreGrid[index].IsUsed && ScoreGrid[index].Points == 0))
                 {
-                    //Update the Yahtzee points. 50 initial points + 100 bonus points for each Yahtzee after.
-                    ScoreGrid[index].Points = 50 + yahtzeeCounter * 100;
-                    //Set bar to valid. (Always set to valid as this method is only called if there is a Yahtzee.)
+
+                    //If the switch is true, updates to possible points.
+                    //If false sets back to yahtzeePoints. Which are either the prior points or the newly updated points.
+                    //Based on if ClickYahtzee() was invoked.
+                    if (yahtzeeUpdateSwitch)
+                    {
+                        //Update the Yahtzee points. 50 initial points + 100 bonus points for each Yahtzee after.
+                        ScoreGrid[index].Points = 50 + yahtzeeCounter * 100;
+                    }
+                    else
+                        ScoreGrid[index].Points = yahtzeePoints;
+
+                    //Set bar to valid to allow user to click button.
                     ScoreGrid[index].IsValid = true;
-                    yahtzeeUpdateSwitch = false;
-                }
-                else
-                {
-                    ScoreGrid[index].Points = yahtzeePoints;
-                    yahtzeeUpdateSwitch = true;
                 }
             }
+            else
+                ScoreGrid[index].IsValid = false;
         }
 
         /// <summary>
@@ -559,8 +584,12 @@ namespace ItViteaYahtzee
             yahtzeePoints = 50 + yahtzeeCounter * 100;
             //Set the yahtzeeClick bool to true & update the counter for amount of selected yahtzee's.
             yahtzeeCounter++;
+
             //Set yahtzeebar to used.
             ScoreGrid[14].IsUsed = true;
+
+            //Now yahtzee has been clicked return IsValid to false to prevent it being clicked again until next yahtzee. 
+            ScoreGrid[14].IsValid = false; 
         }
 
 
