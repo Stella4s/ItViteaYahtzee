@@ -23,8 +23,16 @@ namespace ItViteaYahtzee
                     return
                         element.FindResource("DataTGridBar2") as DataTemplate;
                 else
-                    return
-                        element.FindResource("DataTGridBar1") as DataTemplate;
+                {
+                    //Return Yahtzee GridBar for index 14.
+                    if (baritem.Index == 14)
+                        return
+                            element.FindResource("DataTGridBar3") as DataTemplate;
+                    else
+                        return 
+                            element.FindResource("DataTGridBar1") as DataTemplate;
+                }
+                   
             }
 
             return null;

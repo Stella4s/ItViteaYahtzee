@@ -25,6 +25,10 @@
             <Setter Property="SnapsToDevicePixels" Value="True"/>
         </Style>
 
+        <Style x:Key="styleRowBtn3" TargetType="{x:Type Button}">
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
         <ControlTemplate x:Key="ToggleBtnControlTemplate1" TargetType="{x:Type ToggleButton}">
             <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
                 <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
@@ -138,7 +142,6 @@
             </DataTemplate.Triggers>
         </DataTemplate>
        
-
         <DataTemplate x:Key="DataTGridBar2" >
 
             <ToggleButton x:Name="rowBtn"
@@ -172,6 +175,43 @@
                 </DataTrigger>
                 <DataTrigger Binding="{Binding AllowClick}" Value="False">
                     <Setter TargetName="rowBtn" Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DataTGridBar3">
+
+            <Button x:Name="rowBtn"
+                             Style="{StaticResource styleRowBtn3}"
+                             HorizontalContentAlignment="Stretch"  VerticalContentAlignment="Stretch"
+                             IsEnabled="False"
+                    Command="{Binding DataContext.ClickYahtzeeCmd ,  RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+
+                <Grid x:Name="gridBar" VerticalAlignment="Center">
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Padding" Value="4,0"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"  x:Name="tName" Text="{Binding Name}"/>
+                    <TextBlock Grid.Column="1" x:Name="tPoints" Text="{Binding Points}" HorizontalAlignment="Center"/>
+                </Grid>
+            </Button>
+
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsValid}" Value="True">
+                    <Setter TargetName="tPoints" Property="Foreground"  Value="Red"/>
+                    <Setter TargetName="rowBtn" Property="IsEnabled" Value="True"/>
+                    <Setter TargetName="rowBtn" Property="Background" Value="whitesmoke"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsUsed}" Value="True">
+                    <Setter TargetName="tPoints" Property="Foreground"  Value="Black"/>
+                    <Setter TargetName="tName" Property="TextDecorations"  Value="StrikeThrough"/>
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>

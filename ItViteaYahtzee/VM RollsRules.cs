@@ -265,7 +265,8 @@ namespace ItViteaYahtzee
                 case 5:
                     UpdateScoreBar(8, points);
                     UpdateScoreBar(9, points);
-                    UpdateScoreBar(14, 50);
+                    //UpdateScoreBar(14, 50);
+                    UpdateYahtzee(14);
                     break;
                 default:
                     break;
@@ -517,6 +518,51 @@ namespace ItViteaYahtzee
             UpdateScoreBar(15, score);
         }
 
+        //Counter to keep track of amount of times Yahtzee has been selected.
+        private int yahtzeeCounter = 0;
+        //yahtzee Points to keep track of the current amount of points. (And to reset the bar back to if yahtzee wasn't selected even if available.)
+        private int yahtzeePoints = 0;
+        //Switch for when updateYahtzee is called. First time show possible points. Second time set points to yahtzeePoints. 
+        //YahtzeePoints will be the same as the prior points if Yahtzee was clicked. But will reset to prior points if yahtzee wasn't clicked.
+        private bool yahtzeeUpdateSwitch = true;
+        /// <summary>
+        /// For updating the Yahtzee bar with according points. Method is only called when it has already been determined there is a yahtzee.
+        /// </summary>
+        /// <param name="index"></param>
+        public void UpdateYahtzee(int index)
+        {
+            //If Yahtzee isn't used with zero points. (Aka. Hasn't been given up for zero points.)
+            if (!(ScoreGrid[index].IsUsed && ScoreGrid[index].Points == 0))
+            {
+                if (yahtzeeUpdateSwitch)
+                {
+                    //Update the Yahtzee points. 50 initial points + 100 bonus points for each Yahtzee after.
+                    ScoreGrid[index].Points = 50 + yahtzeeCounter * 100;
+                    //Set bar to valid. (Always set to valid as this method is only called if there is a Yahtzee.)
+                    ScoreGrid[index].IsValid = true;
+                    yahtzeeUpdateSwitch = false;
+                }
+                else
+                {
+                    ScoreGrid[index].Points = yahtzeePoints;
+                    yahtzeeUpdateSwitch = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Called with Command to handle the finalizing of the yahtzee bar being selected.
+        /// </summary>
+        public void ClickYahtzee()
+        {
+            //Update the yahtzeePoints.
+            yahtzeePoints = 50 + yahtzeeCounter * 100;
+            //Set the yahtzeeClick bool to true & update the counter for amount of selected yahtzee's.
+            yahtzeeCounter++;
+            //Set yahtzeebar to used.
+            ScoreGrid[14].IsUsed = true;
+        }
+
 
         #endregion
 
@@ -565,6 +611,13 @@ namespace ItViteaYahtzee
             get
             {
                 return new RelayCommand(WeightedDice);
+            }
+        }
+        public ICommand ClickYahtzeeCmd
+        {
+            get
+            {
+                return new RelayCommand(ClickYahtzee);
             }
         }
         #endregion
