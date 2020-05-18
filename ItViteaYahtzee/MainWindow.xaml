@@ -6,6 +6,12 @@
         xmlns:local="clr-namespace:ItViteaYahtzee"
         mc:Ignorable="d"
         Title="Yahtzee" Height="450" Width="800">
+    
+    <Window.InputBindings>
+        <KeyBinding
+            Key="C"
+            Command="{Binding ToggleCheatsCmd}"/>
+    </Window.InputBindings>
 
     <Window.DataContext>
         <local:VM_RollsRules/>
@@ -85,6 +91,30 @@
                     <Setter Property="BorderBrush" TargetName="border" Value="#FFADB2B5"/>
                     <Setter Property="Foreground" Value="#FF838383"/>
                 </Trigger>-->
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="BtnControlTemplate3" TargetType="{x:Type Button}">
+            <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Button.IsDefaulted" Value="True">
+                    <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" TargetName="border" Value="#FFBEE6FD"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FF3C7FB1"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" TargetName="border" Value="#FFC4E5F6"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FF2C628B"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" TargetName="border" Value="lightgray"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FFADB2B5"/>
+                    <Setter Property="Foreground" Value="dimgray"/>
+                </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
 
@@ -182,7 +212,7 @@
         <DataTemplate x:Key="DataTGridBar3">
 
             <Button x:Name="rowBtn"
-                             Style="{StaticResource styleRowBtn3}"
+                             Style="{StaticResource styleRowBtn3}" Template="{StaticResource BtnControlTemplate3}"
                              HorizontalContentAlignment="Stretch"  VerticalContentAlignment="Stretch"
                              IsEnabled="False"
                     Command="{Binding DataContext.ClickYahtzeeCmd ,  RelativeSource={RelativeSource AncestorType=ItemsControl}}">
@@ -207,14 +237,15 @@
                 <DataTrigger Binding="{Binding IsValid}" Value="false">
                     <Setter TargetName="rowBtn" Property="IsEnabled" Value="False"/>
                 </DataTrigger>
+                <DataTrigger Binding="{Binding IsUsed}" Value="True">
+                    <Setter TargetName="tPoints" Property="Foreground"  Value="Black"/>
+                    <Setter TargetName="tName" Property="TextDecorations"  Value="StrikeThrough"/>
+                </DataTrigger>
                 <DataTrigger Binding="{Binding IsValid}" Value="True">
                     <Setter TargetName="tPoints" Property="Foreground"  Value="Red"/>
                     <Setter TargetName="rowBtn" Property="IsEnabled" Value="True"/>
                     <Setter TargetName="rowBtn" Property="Background" Value="whitesmoke"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding IsUsed}" Value="True">
-                    <Setter TargetName="tPoints" Property="Foreground"  Value="Black"/>
-                    <Setter TargetName="tName" Property="TextDecorations"  Value="StrikeThrough"/>
+                    <Setter TargetName="tName" Property="TextDecorations"  Value=""/>
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
@@ -246,7 +277,9 @@
                             <StackPanel>
                                 <TextBlock FontSize="20" Text="{Binding Number}" HorizontalAlignment="Center"/>
                                 <ToggleButton Content="Hold" IsChecked="{Binding IsHeld, Mode=TwoWay}"/>
-                                <ComboBox ItemsSource="{Binding NumberArray}" SelectedItem="{Binding CheatNumber}">
+                                <!--For testing the application -->
+                                <ComboBox ItemsSource="{Binding NumberArray}" SelectedItem="{Binding CheatNumber}" SelectedIndex="0"
+                                        Opacity="{Binding DataContext.CheatToolsOpacity ,RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                 </ComboBox>
                             </StackPanel>
                         </DataTemplate>
@@ -282,7 +315,7 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Button Name="btnRoll" Grid.Column="1" Content="Roll" Width="150" Height="50" Margin="5" Command="{Binding GetDiceCmd}" />
-                    <Button Name="btnWeightDice" Grid.Column="2" Content="Weighted Dice" Width="150" Height="50" Margin="5" Command="{Binding WeightedDiceCmd}" />
+                    <Button Name="btnWeightDice" Grid.Column="2" Content="Weighted Dice" Width="150" Height="50" Margin="5" Command="{Binding WeightedDiceCmd}" Opacity="{Binding CheatToolsOpacity}"/>
                 </Grid>
 
             </Grid>

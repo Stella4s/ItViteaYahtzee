@@ -19,6 +19,7 @@ namespace ItViteaYahtzee
         private bool _NoNotedPoints;
         private int _EndGameOpacity;
         private int _TotalScore;
+        private int _CheatToolsOpacity;
 
         public VM_RollsRules()
         {
@@ -100,6 +101,15 @@ namespace ItViteaYahtzee
                 OnPropertyChanged();
             }
         }
+        public int CheatToolsOpacity
+        {
+            get { return _CheatToolsOpacity; }
+            set
+            {
+                _CheatToolsOpacity = value;
+                OnPropertyChanged();
+            }
+        }
         public int TotalScore
         {
             get { return _TotalScore; }
@@ -117,6 +127,7 @@ namespace ItViteaYahtzee
         /// </summary>
         public void StartGame()
         {
+            CheatToolsOpacity = 0;
             EndGameOpacity = 0;
             TotalScore = 0;
             NextTurn();
@@ -618,6 +629,17 @@ namespace ItViteaYahtzee
                 DiceRoll++;
             }
         }
+
+        /// <summary>
+        /// Toggles between making cheat tools visible and invisible.
+        /// </summary>
+        public void ShowCheatsSwitch()
+        {
+            if (CheatToolsOpacity == 0)
+                CheatToolsOpacity = 1;
+            else
+                CheatToolsOpacity = 0;
+        }
         #endregion
 
         #region Commands
@@ -647,6 +669,13 @@ namespace ItViteaYahtzee
             get
             {
                 return new RelayCommand(ClickYahtzee);
+            }
+        }
+        public ICommand ToggleCheatsCmd
+        {
+            get
+            {
+                return new RelayCommand(ShowCheatsSwitch);
             }
         }
         #endregion
